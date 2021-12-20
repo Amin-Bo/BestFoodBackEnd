@@ -75,20 +75,32 @@ router.post('/register', (req, res, next) => {
     email: req.body.email,
     password: req.body.password
   });
-
-  newUser.save((err, user) => {
-    if (err) {
+  const query = req.body.email;
+  //Check the user exists
+  User.findOne({email: req.body.email}, (err, user) => {
+    //Error during exuting the query
+    if (user) {
       return res.send({
         success: false,
-        message: 'Failed to save the user'
+        message: 'Error, User already exists'
+      });
+    }else{
+      newUser.save((err, user) => {
+        if (err) {
+          return res.send({
+            success: false,
+            message: 'Failed to save the user'
+          });
+        }
+        res.send({
+          success: true,
+          message: 'User Saved',
+          user
+        });
       });
     }
-    res.send({
-      success: true,
-      message: 'User Saved',
-      user
-    });
   });
+  
 });
 
 module.exports = router;
