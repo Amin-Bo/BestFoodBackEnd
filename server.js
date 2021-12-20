@@ -6,7 +6,6 @@ var passport = require('passport')
 // Initialize App 
 const app = express();
 const userRoutes = require('./Routes/users');
-const taskRoutes = require('./Routes/tasks');
 // DB connection
 //-----------------------------------------------//
 
@@ -30,7 +29,6 @@ require('./config/passport')(passport)
 
 
 app.use('/user',userRoutes);
-app.use('/task',taskRoutes);
 
 app.get('/test',passport.authenticate('jwt',{session:false}), function(req, res, next){
   return res.send({
