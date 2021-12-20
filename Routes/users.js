@@ -52,15 +52,15 @@ router.post('/login', (req, res, next) => {
         let returnUser = {
           name: user.name,
           email: user.email,
-          id: user._id
+          id: user._id,
         }
         
         //Send the response back
         return res.send({
           success: true,
-          message: 'You can login now',
+          message: 'You are logged in now',
           user: returnUser,
-          //token
+          token
         });
     });
 
