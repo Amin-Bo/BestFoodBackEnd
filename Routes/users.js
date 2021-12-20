@@ -103,4 +103,26 @@ router.post('/register', (req, res, next) => {
   
 });
 
+router.get('/user', (req, res, next) => {
+  let token = req.headers.authorization; //token
+  token=token.substring(4, token.length)
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    console.log(token)
+    if (err) return res.status(401).json({
+      title: 'unauthorized'
+    })
+    //token is valid
+    User.findOne({ _id: decoded.user._id }, (err, user) => {
+      
+      if (err) return console.log(err)
+      console.log(decoded)
+      return res.status(200).json({
+        title: 'user grabbed',
+        user
+      })
+    
+    })
+
+  });
+});
 module.exports = router;
