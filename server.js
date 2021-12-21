@@ -9,7 +9,7 @@ const userRoutes = require('./Routes/users');
 // DB connection
 //-----------------------------------------------//
 
-Mongoose.connect(process.env.DATABASE, {
+Mongoose.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true }, {
 
 });
 

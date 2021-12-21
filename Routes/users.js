@@ -105,7 +105,7 @@ router.post('/register', (req, res, next) => {
 });
 
 router.get('/profile', passport.authenticate('jwt',{session: false}),(req, res, next) => {
- req.user.password='';
+ req.user.password=''
   res.json({success: true, message: 'profile ',user: req.user})
 });
 module.exports = router;
