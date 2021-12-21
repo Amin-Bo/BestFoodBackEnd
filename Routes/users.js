@@ -72,7 +72,9 @@ router.post('/login', (req, res, next) => {
 //Registration
 router.post('/register', (req, res, next) => {
   let newUser = new User({
-    name: req.body.name,
+    lastName: req.body.lastName,
+    firstName: req.body.firstName,
+    phone: req.body.phone,
     email: req.body.email,
     password: req.body.password
   });
@@ -107,5 +109,40 @@ router.post('/register', (req, res, next) => {
 router.get('/profile', passport.authenticate('jwt',{session: false}),(req, res, next) => {
  req.user.password=''
   res.json({success: true, message: 'profile ',user: req.user})
+});
+
+router.post("/update", (req, res) => {
+  const { name, username, email, password } = req.body;
+  newUser = req.body;
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(newUser.password, salt, (err, hash) => {
+      if (err) throw err;
+      newUser.password = hash;
+    });
+  });
+   let token = req.headers.token; //token
+   console.log('-------------')
+      console.log(token)
+      console.log('-------------')
+
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    User.findOne({ _id: decoded._id }, (err, user) => {
+      User.findOneAndUpdate({ email: user.email }, newUser, {
+        useFindAndModify: false,
+      }).then((users) => {
+        if (!users) {
+          return res.status(404).json({
+            msg: "users not found !",
+            success: false,
+          });
+        }
+        res.status(200).json({
+          success: true,
+          users,
+          msg: "User grabbed successfully!",
+        });
+      });
+    });
+  });
 });
 module.exports = router;
