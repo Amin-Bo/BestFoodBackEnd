@@ -10,6 +10,40 @@ const RestaurantSchema = mongoose.Schema({
   phone: { type: String, required: true },
   logo: { type: String, required: true },
 });
+//Pre Save Hook. Used to hash the password
+RestaurantSchema.pre('save', function(next) {
+
+  if (!this.isModified('password'))  {
+    return next();
+  }
+
+ //Generate Salt Value
+ bcrypt.genSalt(10, (err, salt) => {
+   if (err) {
+     return next(err);
+   }
+   //Use this salt value to hash password
+   bcrypt.hash(this.password, salt, (err, hash) => {
+     if (err) {
+       return next(err);
+     }
+     this.password = hash;
+     next();
+   });
+
+ });
+
+});
+
+//Custom method to check the password correct when login
+RestaurantSchema.methods.isPasswordMatch = function(plainPassword, hashed, callback) {
+bcrypt.compare(plainPassword, hashed, (err, isMatch) => {
+ if (err) {
+   return callback(err);
+ }
+ callback(null, isMatch);
+});
+}
 
 const Restaurant = mongoose.model('Restaurant', RestaurantSchema);
 

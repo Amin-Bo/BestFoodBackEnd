@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const User = require('../Models/users.js')
+const Restaurant = require('../Models/Restaurant')
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const ONE_WEEK = 604800; //Token validtity in seconds
@@ -13,7 +13,7 @@ router.post('/login', (req, res, next) => {
 
   const query = {email}
   //Check the user exists
-  User.findOne(query, (err, user) => {
+  Restaurant.findOne(query, (err, restaurant) => {
     //Error during exuting the query
     if (err) {
       return res.send({
@@ -23,16 +23,16 @@ router.post('/login', (req, res, next) => {
     }
 
     //No User match the search condition
-    if (!user) {
+    if (!restaurant) {
       return res.send({
         success: false,
-        message: 'Error, Account not found'
+        message: 'Error, Restaurant not found'
       });
     }
 
     //Check if the password is correct
-    user.isPasswordMatch(password, user.password, (err, isMatch) => {
-
+    restaurant.isPasswordMatch(password, restaurant.password, (err, isMatch) => {
+      
         //Invalid password
         if (!isMatch) {
           return res.send({
@@ -46,22 +46,22 @@ router.post('/login', (req, res, next) => {
         const ONE_WEEK = 604800; //Token validtity in seconds
 
         //Generating the token
-        const token = jwt.sign({ user }, process.env.SECRET, { expiresIn: ONE_WEEK });
+        const token = jwt.sign({ restaurant }, process.env.SECRET, { expiresIn: ONE_WEEK });
         console.log(token)
         //console.log( jwt.decode(token))
         //User Is Valid
         //This object is just used to remove the password from the returned fields
-        let returnUser = {
-          name: user.name,
-          email: user.email,
-          id: user._id,
+        let returnRestaurant = {
+          name: restaurant.name,
+          email: restaurant.email,
+          id: restaurant._id,
         }
         
         //Send the response back
         return res.send({
           success: true,
           message: 'You are logged in now',
-          user: returnUser,
+          restaurant: returnRestaurant,
           token
         });
     });
@@ -72,7 +72,7 @@ router.post('/login', (req, res, next) => {
 
 //Registration
 router.post('/register', (req, res, next) => {
-  let newUser = new User({
+  let newRestaurant = new Restaurant({
     lastName: req.body.lastName,
     firstName: req.body.firstName,
     phone: req.body.phone,
@@ -112,7 +112,7 @@ router.get('/profile', passport.authenticate('jwt',{session: false}),(req, res, 
   res.json({success: true, message: 'profile ',user: req.user})
 });
 
-router.post("/update",(req, res) => {
+router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) => {
   const { firstName, lastName, email, password } = req.body;
   newUser = req.body;
   bcrypt.genSalt(10, (err, salt) => {
@@ -121,8 +121,7 @@ router.post("/update",(req, res) => {
       newUser.password = hash;
     });
   });
-  console.log(newUser)
-  /* let token = req.headers.authorization; //token
+   let token = req.headers.authorization; //token
    token = token.substring(4, token.length)
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
     User.findOne({ _id: decoded.user._id }, (err, user) => {
@@ -144,6 +143,6 @@ router.post("/update",(req, res) => {
         });
       });
     });
-  });*/
+  });
 });
 module.exports = router;
