@@ -7,10 +7,10 @@ module.exports = function (passport) {
   opts.jwtFromRequest  = ExtractJwt.fromAuthHeaderWithScheme("jwt");
   opts.secretOrKey = process.env.SECRET;
 
-  console.log("inside passport")
+  //console.log("inside passport")
   passport.use(
     new JwtStrategy(opts, async (jwt_payload, done) => {
-      console.log(jwt_payload);
+      //console.log(jwt_payload);
       try {
         const user = await User.findById(jwt_payload.user._id);
       

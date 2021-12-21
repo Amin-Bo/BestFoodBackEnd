@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../Models/users.js')
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
+const ONE_WEEK = 604800; //Token validtity in seconds
 
 //Login
 router.post('/login', (req, res, next) => {
@@ -126,17 +127,19 @@ router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) =
     User.findOne({ _id: decoded.user._id }, (err, user) => {
       User.findOneAndUpdate({ email: user.email }, newUser, {
         useFindAndModify: false,
-      }).then((users) => {
-        if (!users) {
+      }).then((user) => {
+        if (!user) {
           return res.status(404).json({
-            msg: "users not found !",
+            msg: "user not found !",
             success: false,
           });
         }
+        const token = jwt.sign({ user }, process.env.SECRET, { expiresIn: ONE_WEEK });
         res.status(200).json({
           success: true,
-          users,
-          msg: "User grabbed successfully!",
+          user,
+          token,
+          msg: "User updated successfully!",
         });
       });
     });
