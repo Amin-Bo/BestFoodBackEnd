@@ -121,9 +121,9 @@ router.post("/update",(req, res) => {
       newUser.password = hash;
     });
   });
-  console.log(newUser)
-  /* let token = req.headers.authorization; //token
-   token = token.substring(4, token.length)
+  let token = req.body.token; //token
+
+   //token = token.substring(4, token.length)
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
     User.findOne({ _id: decoded.user._id }, (err, user) => {
       User.findOneAndUpdate({ email: user.email }, newUser, {
@@ -135,15 +135,15 @@ router.post("/update",(req, res) => {
             success: false,
           });
         }
-        const token = jwt.sign({ user }, process.env.SECRET, { expiresIn: ONE_WEEK });
+        const token = jwt.sign({ newUser}, process.env.SECRET, { expiresIn: ONE_WEEK });
         res.status(200).json({
           success: true,
-          user,
+          updatedUser:newUser,
           token,
           msg: "User updated successfully!",
         });
       });
     });
-  });*/
+  });
 });
 module.exports = router;
