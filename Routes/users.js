@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../Models/users.js')
 const passport = require('passport');
-
+const bcrypt = require('bcryptjs');
 
 //Login
 router.post('/login', (req, res, next) => {
@@ -111,8 +111,8 @@ router.get('/profile', passport.authenticate('jwt',{session: false}),(req, res, 
   res.json({success: true, message: 'profile ',user: req.user})
 });
 
-router.post("/update", (req, res) => {
-  const { name, username, email, password } = req.body;
+router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) => {
+  const { firstName, lastName, email, password } = req.body;
   newUser = req.body;
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -120,13 +120,10 @@ router.post("/update", (req, res) => {
       newUser.password = hash;
     });
   });
-   let token = req.headers.token; //token
-   console.log('-------------')
-      console.log(token)
-      console.log('-------------')
-
+   let token = req.headers.authorization; //token
+   token = token.substring(4, token.length)
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
-    User.findOne({ _id: decoded._id }, (err, user) => {
+    User.findOne({ _id: decoded.user._id }, (err, user) => {
       User.findOneAndUpdate({ email: user.email }, newUser, {
         useFindAndModify: false,
       }).then((users) => {
