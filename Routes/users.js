@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../Models/users.js')
+const passport = require('passport');
 
 
 //Login
@@ -103,26 +104,8 @@ router.post('/register', (req, res, next) => {
   
 });
 
-router.get('/profile', (req, res, next) => {
-  let token = req.headers.authorization; //token
-  token=token.substring(4, token.length)
-  jwt.verify(token, process.env.SECRET, (err, decoded) => {
-    console.log(token)
-    if (err) return res.status(401).json({
-      title: 'unauthorized'
-    })
-    //token is valid
-    User.findOne({ _id: decoded.user._id }, (err, user) => {
-      
-      if (err) return console.log(err)
-      console.log(decoded)
-      return res.status(200).json({
-        title: 'user grabbed',
-        user
-      })
-    
-    })
-
-  });
+router.get('/profile', passport.authenticate('jwt',{session: false}),(req, res, next) => {
+ req.user.password='';
+  res.json({success: true, message: 'profile ',user: req.user})
 });
 module.exports = router;
