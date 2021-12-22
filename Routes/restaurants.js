@@ -147,7 +147,7 @@ router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) =
   });
 });
 router.get("/restaurants", (req, res) => {
-  Restaurant.find({}).then((restaurants) => {
+  Restaurant.find({}).populate('foods').then((restaurants) => {
     if (!restaurants) {
       return res.status(404).json({
         msg: "restaurants not found !",

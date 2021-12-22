@@ -16,10 +16,13 @@ router.get(
   }
 );
 router.post("/food", (req, res, next) => {
-  const { name, price, img } = req.body;
+  const { name, price, img, category } = req.body;
   newFood = new Food();
-  newFood = req.body;
-  console.log(newFood);
+  newFood.name = req.body.name;
+  newFood.price = req.body.price;
+  newFood.img = req.body.img;
+  newFood.category = req.body.category;
+  //console.log(newFood);
   //let token = req.headers.authorization; //token
 
   let token = req.body.token; //token
@@ -28,10 +31,13 @@ router.post("/food", (req, res, next) => {
       if (err) {
         res.send({ message: "restaurant not found" });
       } else {
-        //console.log(newFood);
         newFood.restaurant = restaurant;
-
-        //restaurant.foods.push(newFood);
+        console.log(newFood);
+        newFood.restaurant = restaurant;
+        newFood.save();
+        restaurant.foods.push(newFood);
+        restaurant.save();
+        res.send({ message: "Food saved successfully" });
       }
     });
   });
