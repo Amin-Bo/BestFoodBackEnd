@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-
+const Schema = mongoose.Schema;
 
 const FoodSchema = mongoose.Schema({
   name: { type: String, required: true },
@@ -11,6 +11,5 @@ const FoodSchema = mongoose.Schema({
 });
 
 const Food = mongoose.model('Food', FoodSchema);
-var Restaurant  = mongoose.model('Restaurant', RestaurantSchema);
 
 module.exports = Food;

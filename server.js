@@ -9,6 +9,7 @@ var cors = require('cors')
 const app = express();
 const userRoutes = require('./Routes/users');
 const restaurantRoutes = require('./Routes/restaurants');
+const foodRoutes = require('./Routes/food');
 // DB connection
 //-----------------------------------------------//
 app.use(function(req, res, next) {
@@ -38,12 +39,9 @@ require('./config/passport2')(passport)
 
 app.use('/user',userRoutes);
 app.use('/resto',restaurantRoutes);
+app.use('/food',foodRoutes);
 
-app.get('/test',passport.authenticate('jwt',{session:false}), function(req, res, next){
-  return res.send({
-    done:"auth"
-  })
-})
+
 //START APP SERVER
 //---------------------------------------//
 const PORT = process.env.PORT;

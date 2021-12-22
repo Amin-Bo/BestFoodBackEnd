@@ -146,4 +146,20 @@ router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) =
     });
   });
 });
+router.get("/restaurants", (req, res) => {
+  Restaurant.find({}).then((restaurants) => {
+    if (!restaurants) {
+      return res.status(404).json({
+        msg: "restaurants not found !",
+        success: false,
+      });
+    }
+    console.log(restaurants)
+    res.status(200).json({
+      success: true,
+      restaurants,
+      msg: "all restaurants !",
+    });
+  });
+});
 module.exports = router;
