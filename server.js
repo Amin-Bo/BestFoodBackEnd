@@ -33,6 +33,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 //app.use(passport.session());
 require('./config/passport')(passport)
+require('./config/passport2')(passport)
 
 
 app.use('/user',userRoutes);

@@ -12,7 +12,7 @@ router.post('/login', (req, res, next) => {
   const password = req.body.password;
 
   const query = {email}
-  //Check the user exists
+  //Check the restaurant exists
   Restaurant.findOne(query, (err, restaurant) => {
     //Error during exuting the query
     if (err) {
@@ -22,7 +22,7 @@ router.post('/login', (req, res, next) => {
       });
     }
 
-    //No User match the search condition
+    //No restaurant match the search condition
     if (!restaurant) {
       return res.send({
         success: false,
@@ -41,7 +41,7 @@ router.post('/login', (req, res, next) => {
           });
         }
 
-        //User is Valid
+        //restaurant is Valid
 
         const ONE_WEEK = 604800; //Token validtity in seconds
 
@@ -49,7 +49,7 @@ router.post('/login', (req, res, next) => {
         const token = jwt.sign({ restaurant }, process.env.SECRET, { expiresIn: ONE_WEEK });
         console.log(token)
         //console.log( jwt.decode(token))
-        //User Is Valid
+        //restaurant Is Valid
         //This object is just used to remove the password from the returned fields
         let returnRestaurant = {
           name: restaurant.name,
@@ -61,7 +61,7 @@ router.post('/login', (req, res, next) => {
         return res.send({
           success: true,
           message: 'You are logged in now',
-          restaurant: returnRestaurant,
+          restaurant: restaurant,
           token
         });
     });
@@ -73,33 +73,34 @@ router.post('/login', (req, res, next) => {
 //Registration
 router.post('/register', (req, res, next) => {
   let newRestaurant = new Restaurant({
-    lastName: req.body.lastName,
-    firstName: req.body.firstName,
+    name: req.body.name,
+    position: req.body.position,
+    logo: req.body.logo,
     phone: req.body.phone,
     email: req.body.email,
     password: req.body.password
   });
   const query = req.body.email;
-  //Check the user exists
-  User.findOne({email: req.body.email}, (err, user) => {
+  //Check the restaurant exists
+  Restaurant.findOne({email: req.body.email}, (err, restaurant) => {
     //Error during exuting the query
-    if (user) {
+    if (restaurant) {
       return res.send({
         success: false,
-        message: 'Error, User already exists'
+        message: 'Error, restaurant already exists'
       });
     }else{
-      newUser.save((err, user) => {
+      newRestaurant.save((err, restaurant) => {
         if (err) {
           return res.send({
             success: false,
-            message: 'Failed to save the user'
+            message: 'Failed to save the restaurant'
           });
         }
         res.send({
           success: true,
-          message: 'User Saved',
-          user
+          message: 'restaurant Saved',
+          restaurant
         });
       });
     }
@@ -107,39 +108,39 @@ router.post('/register', (req, res, next) => {
   
 });
 
-router.get('/profile', passport.authenticate('jwt',{session: false}),(req, res, next) => {
- req.user.password=''
-  res.json({success: true, message: 'profile ',user: req.user})
+router.get('/profile',passport.authenticate('jwt',{session:false}), (req, res, next) => {
+  res.json({success: true, message: 'profile ',restaurant: req.user})
 });
 
 router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) => {
-  const { firstName, lastName, email, password } = req.body;
-  newUser = req.body;
+  const {name,logo, position, phone, email, password } = req.body;
+  newrestaurant = req.body;
   bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(newUser.password, salt, (err, hash) => {
+    bcrypt.hash(newrestaurant.password, salt, (err, hash) => {
       if (err) throw err;
-      newUser.password = hash;
+      newrestaurant.password = hash;
     });
   });
    let token = req.headers.authorization; //token
    token = token.substring(4, token.length)
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
-    User.findOne({ _id: decoded.user._id }, (err, user) => {
-      User.findOneAndUpdate({ email: user.email }, newUser, {
+    Restaurant.findOne({ _id: decoded.restaurant._id }, (err, restaurant) => {
+      Restaurant.findOneAndUpdate({ email: restaurant.email }, newrestaurant, {
         useFindAndModify: false,
-      }).then((user) => {
-        if (!user) {
+      }).then((restaurant) => {
+        if (!restaurant) {
           return res.status(404).json({
-            msg: "user not found !",
+            msg: "restaurant not found !",
             success: false,
           });
         }
-        const token = jwt.sign({ user }, process.env.SECRET, { expiresIn: ONE_WEEK });
+        restaurant=newrestaurant;
+        const token = jwt.sign({ restaurant }, process.env.SECRET, { expiresIn: ONE_WEEK });
         res.status(200).json({
           success: true,
-          user,
+          restaurant,
           token,
-          msg: "User updated successfully!",
+          msg: "restaurant updated successfully!",
         });
       });
     });
