@@ -7,9 +7,7 @@ const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const ONE_WEEK = 604800; //Token validtity in seconds
 
-router.get(
-  "/food",
-  passport.authenticate("jwt", { session: false }),
+router.get("/food",  passport.authenticate("jwt", { session: false }),
   (req, res, next) => {
     console.log(req.user);
     res.json({ success: true, message: "profile ", restaurant: req.user });
@@ -42,5 +40,20 @@ router.post("/food", (req, res, next) => {
     });
   });
 });
-
+router.get("/foods", (req, res) => {
+  Food.find({}).then((food) => {
+    if (!food) {
+      return res.status(404).json({
+        msg: "foods not found !",
+        success: false,
+      });
+    }
+    console.log(food)
+    res.status(200).json({
+      success: true,
+      food,
+      msg: "all foods !",
+    });
+  });
+});
 module.exports = router;
