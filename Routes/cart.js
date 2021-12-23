@@ -14,7 +14,7 @@ router.get("/cart", (req, res, next) => {
     
     jwt.verify(token, process.env.SECRET, (err, decoded) => {
       console.log(decoded);
-      Cart.find({ client: decoded.user._id }).populate('client').populate('order').then((cart) => {
+      Cart.find({client: decoded.user._id }).populate('client').populate('order').then((cart) => {
         if (!cart){
           console.log("err")
         }
@@ -61,5 +61,30 @@ router.post("/cart", (req, res, next) => {
   })
 
 });
+router.delete("/cart", (req, res, next) => {
+  newFood = new Food();
+  cart=new Cart();
+  query =req.body._id;
+  //console.log(query)
+ //let token =req.headers.token ; //token
+  let token = req.body.token; //token
+  Cart.deleteOne({_id:query},(err, order)=>{
+    if(!order){
+      console.log(err)
+    }
+      jwt.verify(token, process.env.SECRET, (err, decoded) => {
+      User.findOne({ _id: decoded.user._id }, (err, user) => {
+        if (err) {
+          res.send({ message: "user not found" });
+        } else {
+        
+          console.log("order deleted successfully")
+        }
+      });
+    });
+  
+    res.send({msg:"order deleted successfully"})
+  })
 
+})
 module.exports = router;
