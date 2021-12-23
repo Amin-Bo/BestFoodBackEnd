@@ -10,6 +10,7 @@ const app = express();
 const userRoutes = require('./Routes/users');
 const restaurantRoutes = require('./Routes/restaurants');
 const foodRoutes = require('./Routes/food');
+const cartRoutes = require('./Routes/cart');
 // DB connection
 //-----------------------------------------------//
 app.use(function(req, res, next) {
@@ -40,6 +41,7 @@ require('./config/passport2')(passport)
 app.use('/user',userRoutes);
 app.use('/resto',restaurantRoutes);
 app.use('/food',foodRoutes);
+app.use('/cart',cartRoutes);
 
 
 //START APP SERVER
