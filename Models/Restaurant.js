@@ -9,6 +9,8 @@ const RestaurantSchema = mongoose.Schema({
   password: { type: String, required: true },
   phone: { type: String, required: true },
   logo: { type: String, required: true },
+  cover: { type: String },
+  description: { type: String },
   foods: [{ type: Schema.Types.ObjectId, ref: 'Food' }],
 });
 //Pre Save Hook. Used to hash the password

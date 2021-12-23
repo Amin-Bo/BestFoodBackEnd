@@ -76,6 +76,8 @@ router.post('/register', (req, res, next) => {
     name: req.body.name,
     position: req.body.position,
     logo: req.body.logo,
+    cover:req.body.cover,
+    description:req.body.description,
     phone: req.body.phone,
     email: req.body.email,
     password: req.body.password
@@ -113,7 +115,7 @@ router.get('/profile',passport.authenticate('jwt',{session:false}), (req, res, n
 });
 
 router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) => {
-  const {name,logo, position, phone, email, password } = req.body;
+  const {name,logo,cover,description, position, phone, email, password } = req.body;
   newrestaurant = req.body;
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(newrestaurant.password, salt, (err, hash) => {
@@ -121,8 +123,8 @@ router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) =
       newrestaurant.password = hash;
     });
   });
-   let token = req.headers.authorization; //token
-   token = token.substring(4, token.length)
+   let token = req.body.token; //token
+   //token = token.substring(4, token.length)
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
     Restaurant.findOne({ _id: decoded.restaurant._id }, (err, restaurant) => {
       Restaurant.findOneAndUpdate({ email: restaurant.email }, newrestaurant, {
