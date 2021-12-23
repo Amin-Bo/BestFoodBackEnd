@@ -10,8 +10,10 @@ const bcrypt = require("bcryptjs");
 const ONE_WEEK = 604800; //Token validtity in seconds
 
 router.get("/cart", (req, res, next) => {
-    let token = req.body.token; //token
+    let token =req.headers.token ; //token
+    
     jwt.verify(token, process.env.SECRET, (err, decoded) => {
+      console.log(decoded);
       Cart.find({ client: decoded.user._id }).populate('client').populate('order').then((cart) => {
         if (!cart){
           console.log("err")
