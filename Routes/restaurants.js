@@ -126,7 +126,7 @@ router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) =
    let token = req.body.token; //token
    //token = token.substring(4, token.length)
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
-    Restaurant.findOne({ _id: decoded.restaurant._id }, (err, restaurant) => {
+    Restaurant.findOne({ _id: decoded.restaurant._id }, (err, restaurant) => { 
       Restaurant.findOneAndUpdate({ email: restaurant.email }, newrestaurant, {
         useFindAndModify: false,
       }).then((restaurant) => {
