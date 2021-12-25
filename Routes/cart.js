@@ -32,7 +32,7 @@ router.post("/cart", (req, res, next) => {
   newFood = new Food();
   cart=new Cart();
   query =req.body._id;
-  //console.log(query)
+  console.log(query)
  // let token = req.headers.authorization; //token
   let token = req.body.token; //token
   Food.findById({_id:query},(err, food)=>{
@@ -66,10 +66,10 @@ router.post("/cart", (req, res, next) => {
 router.delete("/cart", (req, res, next) => {
   newFood = new Food();
   cart=new Cart();
-  query =req.body._id;
+  query =req.headers._id;
   console.log(query)
  //let token =req.headers.token ; //token
-  let token = req.body.token; //token
+  let token = req.headers.token //token
   console.log(token)
   Cart.deleteOne({_id:query},(err, order)=>{
     if(!order){
