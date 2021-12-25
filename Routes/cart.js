@@ -87,4 +87,33 @@ router.delete("/cart", (req, res, next) => {
   })
 
 })
+router.delete("/delete", (req, res, next) => {
+  newFood = new Food();
+  cart=new Cart();
+  query =req.body._id;
+  //console.log(query)
+ //let token =req.headers.token ; //token
+  let token = req.body.token; //token
+
+      jwt.verify(token, process.env.SECRET, (err, decoded) => {
+      User.findOne({ _id: decoded.user._id }, (err, user) => {
+        if (err) {
+          res.send({ message: "user not found" });
+        } else {
+          Cart.delete({client:decoded.user._id},(err, order)=>{
+            if(!order){
+              console.log(err)
+            }
+
+          } )  
+          console.log("order deleted successfully")
+        }
+      });
+    });
+    
+    res.send({msg:"order deleted successfully"})
+
+
+})
+
 module.exports = router;
