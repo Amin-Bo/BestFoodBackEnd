@@ -9,6 +9,7 @@ var cors = require('cors')
 const app = express();
 app.use(cors())
 const userRoutes = require('./Routes/users');
+const adminRoutes = require('./Routes/admin');
 const restaurantRoutes = require('./Routes/restaurants');
 const foodRoutes = require('./Routes/food');
 const cartRoutes = require('./Routes/cart');
@@ -40,6 +41,7 @@ require('./config/passport2')(passport)
 
 
 app.use('/user',userRoutes);
+app.use('/admin',adminRoutes);
 app.use('/resto',restaurantRoutes);
 app.use('/food',foodRoutes);
 app.use('/cart',cartRoutes);
