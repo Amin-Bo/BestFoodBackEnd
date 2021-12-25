@@ -6,6 +6,8 @@ const Food = require("../Models/Food");
 const Cart = require("../Models/Cart");
 const User = require("../Models/users");
 const passport = require("passport");
+
+
 const bcrypt = require("bcryptjs");
 const ONE_WEEK = 604800; //Token validtity in seconds
 
@@ -65,9 +67,10 @@ router.delete("/cart", (req, res, next) => {
   newFood = new Food();
   cart=new Cart();
   query =req.body._id;
-  //console.log(query)
+  console.log(query)
  //let token =req.headers.token ; //token
   let token = req.body.token; //token
+  console.log(token)
   Cart.deleteOne({_id:query},(err, order)=>{
     if(!order){
       console.log(err)

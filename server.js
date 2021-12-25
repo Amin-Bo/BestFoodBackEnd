@@ -7,6 +7,7 @@ var cors = require('cors')
 
 // Initialize App 
 const app = express();
+app.use(cors())
 const userRoutes = require('./Routes/users');
 const restaurantRoutes = require('./Routes/restaurants');
 const foodRoutes = require('./Routes/food');
