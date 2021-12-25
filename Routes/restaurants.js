@@ -111,7 +111,7 @@ router.post('/register', (req, res, next) => {
   
 });
 
-router.get('/profile',passport.authenticate('jwt',{session:false}), (req, res, next) => {
+router.get('/profile',(req, res, next) => {
   res.json({success: true, message: 'profile ',restaurant: req.user})
 });
 
