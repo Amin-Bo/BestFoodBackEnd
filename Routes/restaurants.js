@@ -167,18 +167,18 @@ router.get("/restaurants", (req, res) => {
 });
 router.delete("/delFood", (req, res) => {
   let token = req.headers.token //token
-  let _id = req.body._id //token
+  let _id = req.headers._id //token
 
   console.log(_id)
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
   //  console.log(decoded)
-     Food.findOne({ _id: _id }, (err, food) => {
+     Food.findOneAndRemove({ _id: _id }, (err, food) => {
      if(err) {
        console.log(err)
         return res.status(500).json({message: "no restaurant found"})
       }
       else {
-          Restaurant.updateOne({ _id:decoded.restaurant._id},{$pull:{foods:food._id}}, (err,f)=>{
+          Restaurant.updateOne({ _id:decoded.restaurant._id},{$pull:{foods:_id}}, (err,f)=>{
             if(err) {console.log(err)}
             return res.json({message:"food deleted ",f})
           })
