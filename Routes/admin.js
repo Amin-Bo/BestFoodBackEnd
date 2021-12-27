@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../Models/users.js')
+const Restaurant = require('../Models/Restaurant')
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const ONE_WEEK = 604800; //Token validtity in seconds
@@ -174,6 +175,36 @@ router.delete('/delUser/:_id',(req, res, next)=>{
                 return res.json({msg: 'User deleted successfully'})
             }
             else{return res.json({msg: 'User not found'})}
+        })
+    }
+    else{
+        res.status(403).json({ success: false, message: 'u are not an admin'})
+
+    }
+})
+// Get User by id 
+router.get('/user/:_id',(req, res, next)=>{
+    if(checkRole){
+        User.findById({_id:req.params._id}, (err, user)=>{
+            if(user){
+                return res.json({msg: 'User grabbed successfully',user})
+            }
+            else{return res.json({msg: 'User not found'})}
+        })
+    }
+    else{
+        res.status(403).json({ success: false, message: 'u are not an admin'})
+
+    }
+})
+// Delete restaurant from database
+router.delete('/delResto/:_id',(req, res, next)=>{
+    if(checkRole){
+        Restaurant.findByIdAndRemove({_id:req.params._id}, (err, user)=>{
+            if(user){
+                return res.json({msg: 'Restaurant deleted successfully'})
+            }
+            else{return res.json({msg: 'Restaurant not found'})}
         })
     }
     else{

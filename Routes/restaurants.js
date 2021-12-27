@@ -149,6 +149,7 @@ router.post("/update",(req, res) => {
     });
   });
 });
+
 router.get("/restaurants", (req, res) => {
   Restaurant.find({}).populate('foods').then((restaurants) => {
     if (!restaurants) {
