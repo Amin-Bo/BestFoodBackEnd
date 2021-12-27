@@ -132,8 +132,8 @@ router.post('/updateUser/:_id',(req, res, next)=>{
         });
         User.findOne({ _id: req.params._id }, (err, user) => {
             console.log(user)
-            User.findOne({email:newUser.email},(err, checkUser) => {
-                if(!checkUser){
+           // User.findOne({email:newUser.email},(err, checkUser) => {
+                //if(!checkUser){
 
                     User.findOneAndUpdate({ email: user.email }, newUser, {
                         useFindAndModify: false,
@@ -152,12 +152,12 @@ router.post('/updateUser/:_id',(req, res, next)=>{
                             msg: "admin updated successfully!",
                         });
                     });
-                }
-                else{
-                    return res.json({message:"user deja exist with this email try another one"})
-                }
+                //}
+                // else{
+                //     return res.json({message:"user deja exist with this email try another one"})
+                // }
                
-            });
+            //});
 
         })
     }
