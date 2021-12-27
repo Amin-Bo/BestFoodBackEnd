@@ -28,6 +28,15 @@ router.get('/profile', (req, res, next) => {
 })
 });
 
+router.get('/users', (req, res, next) => {
+    let token = req.headers.token || req.headers.authorization;
+    if (checkRole) {
+        User.find({},(req, users)=>{
+            return res.json({ success: true, message:"all users" , users})
+        })
+    }
+});
+
 router.post("/update", (req, res) => {
     const { firstName, lastName, email, password,Role } = req.body;
     newUser = req.body;
