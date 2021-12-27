@@ -115,7 +115,7 @@ router.get('/profile',(req, res, next) => {
   res.json({success: true, message: 'profile ',restaurant: req.user})
 });
 
-router.post("/update",passport.authenticate('jwt',{session:false}) ,(req, res) => {
+router.post("/update",(req, res) => {
   const {name,logo,cover,description, position, phone, email, password } = req.body;
   newrestaurant = req.body;
   bcrypt.genSalt(10, (err, salt) => {
